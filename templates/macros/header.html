@@ -1,0 +1,18 @@
+<nav style="text-align: center">
+    <p>
+        <a href="">API</a>
+        <a href="/tariffs">Тарифы</a>
+        <a href="/pay_return">Оплата и возврат</a>
+        <a href="/faq">FAQ</a>
+        <a href="">Контакты</a>
+        {% if login %}
+            {{ name }}
+            <a href="/logout"> Выйти</a>
+
+        {% else %}
+        <a href="/login">Вход</a>
+        <a href="/register">Регистрация</a>
+
+        {% endif %}
+
+</nav>

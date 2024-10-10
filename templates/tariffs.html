@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"
+          content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"
+          href="{{ url_for('templates', path='styles.css') }}">
+    <title>Главная</title>
+</head>
+<body>
+
+{% include 'macros/header.html' %}
+
+
+<h1>Тарифы</h1>
+<div>
+{% for term in durations_list %}
+    {% for tariff in tariffs_list %}
+        <div class="tariffs">
+            <a> {{ term.description }} </a>
+            {{ tariff.name }}
+            {{ tariff.price * term.duration * (100-term.discount)//100}} ₽
+            {{ tariff.description }}
+        </div>
+    {% endfor %}
+    {% endfor %}
+</div>
+
+{% include 'macros/footer.html' %}
+
+</body>
+</html>
