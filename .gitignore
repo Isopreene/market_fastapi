@@ -1,5 +1,5 @@
 .idea
-.secrets
+.secrets.toml
 .env
 .dockerignore
 .gitignore
