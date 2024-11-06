@@ -1,4 +1,5 @@
 .idea
-
+.gitignore
+.dockerignore
 .secrets
 .env
