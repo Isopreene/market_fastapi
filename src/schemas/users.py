@@ -8,20 +8,25 @@ class UserReg(BaseModel):
     email: EmailStr
     phone: PhoneNumber
     password: str
+    repeat_password: str
+
     class Config:
         json_schema_extra = {
             "example": {
                 "name": "Иванов Иван Иванович",
                 "email": "ivanovii@yandex.ru",
                 "phone": "+79999999999",
-                "password": "strongpassword"
+                "password": "strongpassword",
+                "repeat_password": "strongpassword"
             }
         }
+
 
 class UserLogin(BaseModel):
     """Модель pydantic для описания пользователя для логина"""
     email: str
     password: str
+
     class Config:
         json_schema_extra = {
             "example": {
@@ -30,12 +35,27 @@ class UserLogin(BaseModel):
             }
         }
 
+
 class UserRecover(BaseModel):
     """Модель pydantic для описания пользователя для восстановления пароля"""
     email: str
+
     class Config:
         json_schema_extra = {
             "example": {
                 "email": "ivanovii@yandex.ru"
+            }
+        }
+
+
+class NewPassword(BaseModel):
+    """Модель pydantic для установления пароля нового пользователя"""
+    password: str
+    repeat_password: str
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "password": "strongpassword"
             }
         }
