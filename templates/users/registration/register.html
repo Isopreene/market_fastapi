@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"
+          content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('templates', path='styles.css') }}">
+    <title>Title</title>
+</head>
+
+<body>
+
+{% include 'macros/header.html' %}
+
+<div class="registration-form">
+    <h2>Регистрация</h2>
+    <form action="/register" method="POST">
+        <label>Email:
+            <input name="email" required>
+        </label><br>
+        <label>Пароль:
+            <input name="password" required>
+        </label><br>
+        <label>Повторите пароль:
+            <input name="repeat_password" required>
+        </label><br>
+        <label>Контактный телефон:
+            <input name="phone" required>
+        </label><br>
+        <label>Как к Вам обращаться?
+            <input name="name" required>
+        </label><br>
+        <input type="submit" value="Зарегистрироваться"><br>
+    </form>
+
+    <a href="/login">Уже есть аккаунт?</a><br>
+    <a href="/recover">Забыли пароль?</a><br>
+</div>
+
+{% include 'macros/footer.html' %}
+
+</body>
+</html>
+</body>
+</html>
+
+

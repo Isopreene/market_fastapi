@@ -1,0 +1,5 @@
+.idea
+.secrets.toml
+.env
+.dockerignore
+.gitignore

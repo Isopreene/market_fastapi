@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"
+          content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('templates', path='styles.css') }}">
+    <title>Title</title>
+</head>
+
+<body>
+
+{% include 'macros/header.html' %}
+
+<div class="recover-form">
+    <h2>Восстановление пароля</h2>
+    <form action="/recover" method="POST">
+        <label>Email:
+            <input name="email" required>
+        </label><br>
+        <input type="submit" value="Восстановить пароль"><br>
+    </form>
+</div>
+    <a href="/register">Регистрация</a><br>
+    <a href="/login">Уже есть аккаунт?</a>
+{% include 'macros/footer.html' %}
+
+</body>
+</html>

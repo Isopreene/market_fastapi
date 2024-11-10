@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"
+          content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('templates', path='styles.css') }}">
+    <title>Главная</title>
+<body style="background-color: mediumpurple;
+             color: white;">
+
+{% include 'macros/header.html' %}
+
+<!-- something for article in articles + pagination -->
+{% for category in categories %}
+<nav style="text-align: right">
+    <a
+            href="{{ url_for('list_all_articles_with_pages', page=page).include_query_params(category=category) }}">
+        {{ category }}</a>
+</nav>
+{% endfor %}
+<br>
+<form style="text-align: right" method="POST"
+      action="{{ url_for('search_articles').include_query_params(search_text=search_text) }}">
+    <label for="search_text">Поиск</label>
+    <input type=search id="search_text" name="search_text">
+    <button type="submit">Искать</button>
+</form>
+<br>
+
+<br>
+{% for article in articles %}
+<div class="article">{{ article.id }}</div>
+<div class="article">{{ article.name }}</div>
+<div class="article">{{ article.description }}</div><br>
+{% endfor %}
+
+<div style="text-align: center">
+{% for page_number in range(1, pages_number+1) %}
+    <a
+            href="{{ url_for('list_all_articles_with_pages', page=page_number).include_query_params(category=category) }}">
+        {{ page_number }}</a>&nbsp&nbsp
+{% endfor %}
+</div>
+
+{% include 'macros/footer.html' %}
+
+</body>
+</html>
