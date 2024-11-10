@@ -10,11 +10,11 @@ from src.app.back.users_back import (get_password_hash,
                                      create_access_token,
                                      verify_password_hash
                                      )
-from src.celery_mail.tasks import send_email
+from src.celery_mail.tasks import send_email_user_activation, \
+    send_email_reset_password
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from typing import Annotated
-
 
 router = APIRouter(tags=["Auth"])
 templates = Jinja2Templates(directory="templates")
@@ -50,7 +50,8 @@ async def post_register(request: Request,
     db.add(reg)
     await db.commit()
     await db.refresh(reg)
-    await send_email(email=email, route="activate_link")
+    send_email_user_activation.delay(email=email)
+
     return templates.TemplateResponse("users/registration/mail_sent.html",
                                       {"request": request})
 
@@ -95,8 +96,9 @@ async def post_recover(request: Request, email: Annotated[str, Form(...)],
                        db: AsyncSession = Depends(get_db)):
     user = await db.execute(select(UserModel).filter_by(email=email))
     user = user.scalar()
-    if user.email == email:
-        await send_email(email=email, route="new_password")
+    if user and user.email == email:
+        # await async_send_email(email=email, route='auth/reset_password')
+        send_email_reset_password.delay(email=email)
         return templates.TemplateResponse("users/recovery/email_sent.html",
                                           {"request": request})
     else:

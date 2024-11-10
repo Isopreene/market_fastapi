@@ -1,17 +1,17 @@
 services:
-  backend:
-    container_name: back
+  app:
+    container_name: app
     build: .
     ports:
       - "8000:8000"
     depends_on:
-      db:
+      postgres:
         condition: service_healthy
-      broker:
+      rabbitmq:
         condition: service_healthy
     restart: always
 
-  db:
+  postgres:
     container_name: postgres
     image: postgres:latest
     environment:
@@ -30,7 +30,7 @@ services:
       retries: 5
     restart: unless-stopped
 
-  db_test:
+  postgres_test:
     container_name: postgres_test
     image: postgres:latest
     environment:
@@ -53,7 +53,7 @@ services:
       retries: 5
     restart: unless-stopped
 
-  broker:
+  rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:management
     environment:

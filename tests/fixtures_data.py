@@ -2,7 +2,7 @@ from datetime import datetime
 from src.schemas.blog import Article
 import pytest
 from src.database.models import Article as ArticleModel, User as UserModel
-from src.app.routes.mail import mail_cache
+from src.app.routes.activate_and_reset import mail_cache
 from src.app.back.mail_back import MailCache
 from src.app.back.users_back import get_password_hash
 from tests.conftest import async_session_maker

@@ -2,10 +2,11 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+
 from src.app.routes.blog import router as blog_router
 from src.app.routes.users import router as auth_router
 from src.app.routes.main_pages import router as main_pages_router
-from src.app.routes.mail import router as mail_router
+from src.app.routes.activate_and_reset import router as mail_router
 from src.app.back.users_back import get_name_and_login_from_decrypt_token
 
 
@@ -16,7 +17,7 @@ app.mount("/static", StaticFiles(directory="templates"), name="templates")
 app.include_router(router=blog_router, prefix="/blog")
 app.include_router(router=auth_router)
 app.include_router(router=main_pages_router)
-app.include_router(router=mail_router)
+app.include_router(router=mail_router, prefix="/auth")
 
 
 @app.get("/", response_class=HTMLResponse)

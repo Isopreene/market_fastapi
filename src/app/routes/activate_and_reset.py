@@ -19,13 +19,14 @@ router.mount("/static", StaticFiles(directory="templates"), name="templates")
 mail_cache = MailCache()
 
 
-@router.get("/activate_link")
-async def activate_link(request: Request,
-                        secret_key: str,
-                        db: AsyncSession = Depends(get_db)):
-    link = mail_cache.activate_link(secret_key)
-    if link:
-        user = await db.execute(select(UserModel).filter_by(email=link.email))
+@router.get("/activate", response_model=None)
+async def activate(request: Request,
+                   email:str,
+                   secret_key: str,
+                   db: AsyncSession = Depends(get_db)):
+    email = await mail_cache.activate(email, secret_key)
+    if email:
+        user = await db.execute(select(UserModel).filter_by(email=email))
         user = user.scalar()
         if user:
             user.activated = True
@@ -40,20 +41,22 @@ async def activate_link(request: Request,
         return Response(status_code=404, content="Неверная ссылка")
 
 
-@router.get("/new_password")
-async def get_new_password(request: Request, secret_key: str):
-    link = mail_cache.activate_link(secret_key)
-    if link:
+@router.get("/reset_password")
+async def get_new_password(request: Request,
+                           secret_key: str,
+                           email:str):
+    email = await mail_cache.activate(email, secret_key)
+    if email:
         response = templates.TemplateResponse(
-            "users/recovery/new_password.html", {"request": request})
-        access_token = create_access_token({"email": link.email})
+            "users/recovery/reset_password_form.html", {"request": request})
+        access_token = create_access_token({"email": email})
         response.set_cookie(key="access_token", value=access_token)
         response.set_cookie(key="token_type", value="bearer")
         return response
     return Response(status_code=404, content="Неверная ссылка")
 
 
-@router.post("/new_password")
+@router.post("/reset_password")
 async def post_new_password(request: Request,
                             password: Annotated[str, Form(...)],
                             repeat_password: Annotated[str, Form(...)],
@@ -78,5 +81,5 @@ async def post_new_password(request: Request,
         user.hashed_password = get_password_hash(password)
         await db.commit()
         return templates.TemplateResponse(
-            "users/recovery/new_password_updated.html", context={
+            "/users/recovery/reset_password.html", context={
                 "request": request})

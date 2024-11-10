@@ -1,7 +1,9 @@
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from .celery_config import celery_app
-from src.app.routes.mail import mail_cache
+from src.app.routes.activate_and_reset import mail_cache
 from config import settings
+from asgiref.sync import async_to_sync
+
 
 conf = ConnectionConfig(
     MAIL_USERNAME=settings.MAIL_USERNAME,
@@ -14,10 +16,22 @@ conf = ConnectionConfig(
 )
 
 
-@celery_app.task
-async def send_email(email: str, route: str):
+@celery_app.task(name="send_email_user_activation_w")
+def send_email_user_activation(email: str):
+    result = async_to_sync(async_send_email)(email,
+                                             route="auth/activate")
+    return result
+
+@celery_app.task(name="send_email_reset_password_w")
+def send_email_reset_password(email: str):
+    result = async_to_sync(async_send_email)(email,
+                                             route="auth/reset_password")
+    return result
+
+
+async def async_send_email(email: str, route: str):
     """отправляем ссылку для подтверждения/восстановления аккаунта"""
-    url = mail_cache.generate_link(email, route)
+    url = await mail_cache.generate(email, route)
     template = f"""
     <html>
         <body>
